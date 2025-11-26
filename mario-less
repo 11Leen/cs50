@@ -1,0 +1,26 @@
+#include <cs50.h> //cs50 library to include get_int
+#include <stdio.h>
+int main(void)
+{
+    int n;
+
+    do // للتحقق من صحة المدخلات
+    {
+        n = get_int("Height: "); // نطلب المدخلات مرة واحده على الاقل
+    }
+    while (n < 1 || n > 8); // نستمر في طلب المدخلات اذا كانت القيمة خارج هاذ النطاق
+
+    for (int i = 1; i <= n; i++)
+    {
+        for (int j = 0; j < n - i; j++)
+        {
+            printf(" ");
+        }
+        for (int k = 1; k <= i; k++)
+        {
+            printf("#");
+        }
+        printf("\n");
+    }
+    return 0;
+}
