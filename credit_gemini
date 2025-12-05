@@ -1,0 +1,87 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>  //  <-- يجب إضافة هذا الملف لاستخدام الدالة atoi()
+
+// الدالة الرئيسية للتحقق من خوارزمية لون (لم تتغير)
+bool check_luhn(char *card_number)
+{
+    int nDigits = strlen(card_number);
+    int nSum = 0;
+    bool isSecond = false;
+
+    for (int i = nDigits - 1; i >= 0; i--)
+    {
+        int d = card_number[i] - '0';
+
+        if (isSecond == true)
+        {
+            d = d * 2;
+        }
+
+        nSum += d / 10;
+        nSum += d % 10;
+
+        isSecond = !isSecond;
+    }
+
+    return (nSum % 10 == 0);
+}
+
+// الدالة الرئيسية لتشغيل البرنامج
+int main()
+{
+    char card_number[20];
+
+    printf("Enter Credit Card Number: ");
+    scanf("%s", card_number);
+
+    int length = strlen(card_number);
+
+    // 1. التحقق من الطول (لم تتغير)
+    if (length < 13 || length == 14 || length > 16)
+    {
+        printf("INVALID\n");
+        return 0;
+    }
+
+    // 2. تطبيق خوارزمية لون (لم تتغير)
+    if (check_luhn(card_number) == false)
+    {
+        printf("INVALID\n");
+        return 0;
+    }
+
+    // 3. التحقق من نوع البطاقة (الشبكة)
+    char prefix1 = card_number[0];
+    
+    // إعداد أول خانتين كسلسلة نصية
+    char prefix2_str[3] = {card_number[0], card_number[1], '\0'};
+    
+    // التصحيح هنا: استخدام اسم المتغير الصحيح prefix2_str
+    int prefix2 = atoi(prefix2_str); 
+
+
+    // AMEX: 15 خانة، تبدأ بـ 34 أو 37
+    if (length == 15 && (prefix2 == 34 || prefix2 == 37))
+    {
+        printf("AMEX\n");
+    }
+    // MASTERCARD: 16 خانة، تبدأ بـ 51 إلى 55
+    else if (length == 16 && (prefix2 >= 51 && prefix2 <= 55))
+    {
+        printf("MASTERCARD\n");
+    }
+    // VISA: 13 أو 16 خانة، تبدأ بـ 4
+    else if ((length == 13 || length == 16) && prefix1 == '4')
+    {
+        printf("VISA\n");
+    }
+    // لم تتطابق مع أي من الأنواع/الشروط المحددة
+    else
+    {
+        printf("INVALID\n");
+    }
+
+    return 0;
+}
