@@ -1,0 +1,84 @@
+#include <cs50.h>
+#include <stdio.h>
+int main(void)
+{
+    // 1. طلب الإدخال
+    long long number = get_long_long("Number: ");
+
+    // 2. تعريف المتغيرات الأساسية وتعيين القيم الأولية
+    long long sum = 0;
+    long long temp = number; // نسخة للعمليات
+    int counter = 0;         // لحساب الطول وتحديد مكان الخانة
+    int first_one = 0;
+    int first_two = 0;
+
+    // 3. تطبيق خوارزمية Luhn وحساب الطول
+    while (temp > 0)
+    {
+        int digit = temp % 10; // الحصول على آخر خانة
+
+        if (counter % 2 != 0) // الخانات التي لم يتم ضربها في 2 (الخانات الفردية من اليمين)
+        {
+            sum += digit;
+        }
+        else // الخانات التي يتم ضربها في 2 (الخانات الزوجية من اليمين)
+        {
+            int product = digit * 2;
+            // جمع خانات حاصل الضرب: (product % 10) + (product / 10)
+            sum += (product % 10) + (product / 10);
+
+            /* ملاحظة: إذا كنت تستخدم الطريقة البديلة:
+            if (product > 9)
+            {
+                sum += product - 9;
+            }
+            else
+            {
+                sum += product;
+            }
+            */
+        }
+
+        // 4. حفظ الأرقام الأولى في كل تكرار
+        if (temp < 100 && temp >= 10)
+        {
+            first_two = temp;
+        }
+        if (temp < 10 && temp >= 1)
+        {
+            first_one = temp;
+        }
+
+        // تجهيز التكرار التالي
+        temp = temp / 10;
+        counter++; // زيادة عداد الطول وموقع الخانة
+    }
+
+    // 5. التحقق من الطول وصحة المجموع
+    int length = counter;
+
+    if (sum % 10 != 0)
+    {
+        printf("INVALID\n");
+    }
+    else
+    {
+        // 6. التحقق من نوع البطاقة
+        if (length == 15 && (first_two == 34 || first_two == 37))
+        {
+            printf("AMEX\n");
+        }
+        else if (length == 16 && first_two >= 51 && first_two <= 55)
+        {
+            printf("MASTERCARD\n");
+        }
+        else if ((length == 13 || length == 16) && first_one == 4)
+        {
+            printf("VISA\n");
+        }
+        else
+        {
+            printf("INVALID\n");
+        }
+    }
+}
